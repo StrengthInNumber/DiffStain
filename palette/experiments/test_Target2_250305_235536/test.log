@@ -1,0 +1,11 @@
+25-03-05 23:55:36.074 - INFO: Create the log file in directory experiments/test_Target2_250305_235536.
+
+25-03-05 23:55:36.460 - INFO: Dataset [CellPaintingDataset() form data.dataset] is created.
+25-03-05 23:55:36.460 - INFO: Dataset for test have 8 samples.
+25-03-05 23:55:37.017 - INFO: Network [Network() form models.network] is created.
+25-03-05 23:55:37.017 - WARNING: Config is a str, converts to a dict {'name': 'mse'}
+25-03-05 23:55:37.018 - INFO: Metric [mse() form models.metric] is created.
+25-03-05 23:55:37.019 - WARNING: Config is a str, converts to a dict {'name': 'mse_loss'}
+25-03-05 23:55:37.019 - INFO: Loss [mse_loss() form models.loss] is created.
+25-03-05 23:55:38.110 - INFO: Model [Palette() form models.model] is created.
+25-03-05 23:55:38.110 - INFO: Begin model test.

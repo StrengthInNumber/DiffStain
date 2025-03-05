@@ -1,0 +1,170 @@
+{
+    "name": "Target2",
+    "gpu_ids": [
+        0
+    ],
+    "seed": -1,
+    "finetune_norm": false,
+    "path": {
+        "base_dir": "experiments",
+        "code": "code",
+        "tb_logger": "tb_logger",
+        "results": "results",
+        "checkpoint": "checkpoint",
+        "resume_state":  null
+    },
+    "datasets": {
+        "train": {
+            "which_dataset": {
+                "name": [
+                    "data.dataset",
+                    "CellPaintingDataset"
+                ],
+                "args": {
+                    "dataset_path": "~/autodl-tmp/controlNet/Palette-Image-to-Image-Diffusion-Models/cell_painting_train_mini/",
+                    "to_size": 512,
+                    "clip_percent": 2,
+                    "phase": "train",
+                    "binary_cond_path": null,
+                    "gt_img_mean": [0.22163097061772077, 0.15960744027926482, 0.15856768450736192, 0.1464473988783382, 0.0806652742992612],
+                    "gt_img_std": [0.2122101685816481, 0.22743527384023554, 0.2329237919986701, 0.22080352490903563, 0.18665678121328116],
+                    "cond_img_mean": [0.5400268630588958, 0.49341613894624253, 0.5061081205316877],
+                    "cond_img_std": [0.2050765601630718, 0.21058374049125064, 0.2241386083075072]
+                }
+            },
+            "dataloader": {
+                "validation_split": 1,
+                "args": {
+                    "batch_size": 1,
+                    "num_workers": 1,
+                    "shuffle": true,
+                    "pin_memory": true,
+                    "drop_last": true
+                },
+                "val_args": {
+                    "batch_size": 1,
+                    "num_workers": 1,
+                    "shuffle": false,
+                    "pin_memory": true,
+                    "drop_last": false
+                }
+            }
+        },
+        "test": {
+            "which_dataset": {
+                "name": [
+                    "data.dataset",
+                    "CellPaintingDataset"
+                ],
+                "args": {
+                    "dataset_path": "~/autodl-tmp/controlNet/Palette-Image-to-Image-Diffusion-Models/cell_painting_test_mini/",
+                    "to_size": 512,
+                    "clip_percent": 2,
+                    "phase": "test",
+                    "binary_cond_path": null,
+                    "gt_img_mean": [0.22163097061772077, 0.15960744027926482, 0.15856768450736192, 0.1464473988783382, 0.0806652742992612],
+                    "gt_img_std": [0.2122101685816481, 0.22743527384023554, 0.2329237919986701, 0.22080352490903563, 0.18665678121328116],
+                    "cond_img_mean": [0.5400268630588958, 0.49341613894624253, 0.5061081205316877],
+                    "cond_img_std": [0.2050765601630718, 0.21058374049125064, 0.2241386083075072]
+                }
+            },
+            "dataloader": {
+                "args": {
+                    "batch_size": 1,
+                    "num_workers": 1,
+                    "shuffle": false,
+                    "pin_memory": true,
+                    "drop_last": false
+                }
+            }
+        }
+    },
+    "model": {
+        "which_model": {
+            "name": [
+                "models.model",
+                "Palette"
+            ],
+            "args": {
+                "sample_num": 2,
+                "task": "target_2",
+                "network_ckpt": "/root/autodl-tmp/controlNet/Palette-Image-to-Image-Diffusion-Models/experiments/train_Target2_250216_185554/checkpoint/90_Network_ema.pth",
+                "ema_scheduler": {
+                    "ema_start": 1,
+                    "ema_iter": 1,
+                    "ema_decay": 0.9999
+                },
+                "optimizers": [
+                    {
+                        // "lr": 8e-5,
+                        "lr": 3e-5,
+                        "weight_decay": 0
+                    }
+                ]
+            }
+        },
+        "which_networks": [
+            {
+                "name": [
+                    "models.network",
+                    "Network"
+                ],
+                "args": {
+                    "init_type": "kaiming",
+                    "unet": {
+                        "in_channel": 8,
+                        "out_channel": 5,
+                        "inner_channel": 64,
+                        "channel_mults": [
+                            1,
+                            2,
+                            4,
+                            8
+                        ],
+                        "attn_res": [
+                            16
+                        ],
+                        "num_head_channels": 32,
+                        "res_blocks": 2,
+                        "dropout": 0.2,
+                        "image_size": 512
+                    },
+                    "beta_schedule": {
+                        "train": {
+                            "schedule": "linear",
+                            "n_timestep": 2000,
+                            "linear_start": 1e-6,
+                            "linear_end": 0.01
+                        },
+                        "test": {
+                            "schedule": "linear",
+                            "n_timestep": 2500,
+                            "linear_start": 1e-6,
+                            "linear_end": 0.01
+                        }
+                    }
+                }
+            }
+        ],
+        "which_losses": [
+            "mse_loss"
+        ],
+        "which_metrics": [
+            "mse"
+        ]
+    },
+    "train": {
+        "n_epoch": 202,
+        "n_iter": 1e8,
+        "val_epoch": 10,
+        "save_checkpoint_epoch": 10,
+        "log_iter": 1e3,
+        "tensorboard": false
+    },
+    "debug": {
+        "val_epoch": 1,
+        "save_checkpoint_epoch": 1,
+        "log_iter": 2,
+        "debug_split": 50
+    }
+}
