@@ -112,44 +112,30 @@ class Network(BaseNetwork):
     @torch.no_grad()
     def restoration_from_noisy_ref_img(self, y_cond, y_t=None, y_0=None, mask=None, sample_num=8, ref_img=None, t_start=None):
         b, *_ = y_cond.shape
-        sample_num = 100
-        # ===== 新增部分：处理参考图像 =====
+        # add noise to the reference image
         if ref_img is not None:
-            # 校验时间步参数
-            assert t_start is not None, "必须提供t_start参数当使用ref_img时"
-            assert 0 <= t_start < self.num_timesteps, f"t_start需在[0, {self.num_timesteps-1}]范围"
+            assert t_start is not None, "t_start is required when ref_img is provided"
+            assert 0 <= t_start < self.num_timesteps, f"t_start has to be in [0, {self.num_timesteps-1}]"
             
-            # 生成对应时间步的噪声图像
             t_tensor = torch.full((b,), t_start, device=y_cond.device, dtype=torch.long)
             gamma_t = extract(self.gammas, t_tensor, x_shape=(1, 1))  # [B,1,1,1]
             y_t = self.q_sample(ref_img, gamma_t)
         else:
-            # 原始逻辑：无参考图像时初始化噪声
             y_t = default(y_t, lambda: torch.randn_like(y_0))
-
-        # ===== 调整反向扩散起点 =====
+            
         start_step = t_start if t_start is not None else self.num_timesteps - 1
-        remaining_steps = start_step + 1  # 包含从start_step到0的总步数
+        remaining_steps = start_step + 1 
         
         sample_inter = (remaining_steps // sample_num)
 
         ret_arr = y_t
-        Image.fromarray(self.tensor_to_img(y_t[0, 0])).save(f'./test/output_000.png')
-        # ===== 修改循环范围 =====
         for i in tqdm(reversed(range(0, start_step + 1)), 
-                    desc='sampling loop time step (from noisy ref img)', 
-                    total=remaining_steps):
+                        desc='sampling loop time step (from noisy ref img)',
+                        total=remaining_steps):
             t = torch.full((b,), i, device=y_cond.device, dtype=torch.long)
-            
-            # 执行单步去噪
             y_t = self.p_sample(y_t, t, y_cond=y_cond)
-            # Image.fromarray(self.tensor_to_img(y_t[0, 0])).save(f'./test/output_{i}.png')
-            
-            # 应用mask混合（若存在）
             if mask is not None:
                 y_t = y_0*(1.-mask) + mask*y_t
-            
-            # 记录中间结果
             if i % sample_inter == 0:
                 ret_arr = torch.cat([ret_arr, y_t], dim=0)
         

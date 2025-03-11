@@ -1,5 +1,5 @@
 {
-    "name": "Target2",
+    "name": "DiffStain_Palette",
     "gpu_ids": [
         0
     ],
@@ -21,7 +21,7 @@
                     "CellPaintingDataset"
                 ],
                 "args": {
-                    "dataset_path": "~/autodl-tmp/controlNet/Palette-Image-to-Image-Diffusion-Models/cell_painting_train_mini/",
+                    "dataset_path": "/root/autodl-tmp/controlNet/Palette-Image-to-Image-Diffusion-Models/cell_painting_test_mini/",
                     "to_size": 512,
                     "clip_percent": 2,
                     "phase": "train",
@@ -87,7 +87,6 @@
             ],
             "args": {
                 "sample_num": 2,
-                "task": "target_2",
                 "network_ckpt": "/root/autodl-tmp/controlNet/Palette-Image-to-Image-Diffusion-Models/experiments/train_Target2_250216_185554/checkpoint/90_Network_ema.pth",
                 "ema_scheduler": {
                     "ema_start": 1,
@@ -96,11 +95,11 @@
                 },
                 "optimizers": [
                     {
-                        "lr": 3e-5,
+                        "lr": 8e-5,
                         "weight_decay": 0
                     }
                 ],
-                "t_start": 2000
+                "t_start": 10
             }
         },
         "which_networks": [
