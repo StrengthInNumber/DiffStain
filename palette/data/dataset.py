@@ -9,7 +9,8 @@ import pandas as pd
 
 
 class CellPaintingDataset(data.Dataset):
-    def __init__(self, dataset_path, to_size, clip_percent, phase, binary_cond_path,
+    def __init__(self, dataset_path, to_size, clip_percent, phase,
+                 if_nsc_binary_cond, binary_cond_path_list,
                  gt_img_mean, gt_img_std, cond_img_mean, cond_img_std):
         self.dataset_path = dataset_path
         self.dataset_list = [x for x in os.listdir(dataset_path) if os.path.isdir(os.path.join(dataset_path, x))]
@@ -17,9 +18,12 @@ class CellPaintingDataset(data.Dataset):
         self.is_train = phase == 'train'
         self.clip_percent = clip_percent
         
-        self.binary_cond_path = binary_cond_path
-        if binary_cond_path is not None:
-            self.binary_cond_list = os.listdir(binary_cond_path)
+        self.if_nsc_binary_cond = if_nsc_binary_cond
+        if if_nsc_binary_cond is not None:
+            self.binary_cond_path = {}
+            for key in binary_cond_path_list:
+                channel_list = os.listdir(binary_cond_path_list[key])
+                self.binary_cond_path[key] = {file_name.split('_')[0]: os.path.join(binary_cond_path_list[key], file_name) for file_name in channel_list}         
         
         self.gt_img_mean = np.array(gt_img_mean)
         self.gt_img_std = np.array(gt_img_std)
@@ -51,6 +55,8 @@ class CellPaintingDataset(data.Dataset):
                 image_in = (image_in - self.gt_img_mean[channel]) / self.gt_img_std[channel]
             else:
                 image_in = (image_in - self.cond_img_mean[channel-5]) / self.cond_img_std[channel-5]
+        else:
+            image_in = np.where(image_in > 0, 1, 0)
         
         image_in = self.aug(image=image_in)['image']
         image_in = image_in.astype(np.float32)
@@ -65,10 +71,9 @@ class CellPaintingDataset(data.Dataset):
         ret = {}
         img_dir = self.dataset_list[idx]
         img_chs_path = [os.listdir(os.path.join(self.dataset_path, img_dir))[i] for i in range(8)]
-        img_chs = [self.standardize_image(os.path.join(
-            self.dataset_path, img_dir, img_chs_path[i]), i) for i in range(8)]
+        img_chs = [self.standardize_image(os.path.join(self.dataset_path, img_dir, img_chs_path[i]), i) for i in range(8)]
              
-        img_gt = np.concatenate((img_chs[0], img_chs[1], img_chs[2], img_chs[3], img_chs[4]), axis= 0)
+        img_gt = np.concatenate((img_chs[0], img_chs[1], img_chs[2], img_chs[3], img_chs[4]), axis=0)
         img_cond = np.concatenate((img_chs[5], img_chs[6], img_chs[7]), axis=0)
                 
         img_gt = torch.tensor(img_gt, dtype=torch.float)
@@ -77,11 +82,9 @@ class CellPaintingDataset(data.Dataset):
         ret['gt_image'] = img_gt  # (output) Cell Painting 5x
         ret['cond_image'] = img_cond  # (input) Brightfield 3x
         
-        if self.binary_cond_path is not None:
-            binary_dir = self.binary_cond_list[idx]
-            binary_chs_path = [os.listdir(os.path.join(self.binary_cond_path, binary_dir))[i] for i in range(5)]
-            binary_chs = [self.standardize_image(os.path.join(
-                self.binary_cond_path, binary_dir, binary_chs_path[i]), i, is_binary=True) for i in range(5)]
+        if self.if_nsc_binary_cond is not None:
+            binary_chs_path = [self.binary_cond_path[f'C0{i+1}'][img_dir] for i in range(5)]
+            binary_chs = [self.standardize_image(binary_chs_path[i], i, is_binary=True) for i in range(5)]
             img_binary = np.concatenate((binary_chs[0], binary_chs[1], binary_chs[2], binary_chs[3], binary_chs[4]), axis=0)
             img_binary = torch.tensor(img_binary, dtype=torch.float)
             ret['ref_image'] = img_binary

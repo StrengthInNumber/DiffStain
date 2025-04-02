@@ -114,6 +114,7 @@ class VisualWriter():
         
         
         for i in range(0, len(results['result'][1])):
+            
             imgs_tensor = results['result'][1][i]
             for j in range(len(imgs_tensor)):
                 Image.fromarray(self.tensor_to_img(imgs_tensor[j])).save(os.path.join(result_path, names[1] + f'_{i}_C0{j+1}.png'))

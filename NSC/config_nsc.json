@@ -1,0 +1,30 @@
+{
+    "model_ckpt_path": "/root/autodl-tmp/DiffStain/NSC/dino/output/C01/checkpoint0200_for_dsm.pth",
+    "dataset": {
+        "palette_out_path": "/root/autodl-tmp/DiffStain/palette/experiments/test_Target2_250219_213653_loop_2/results/test",
+        "crop_num": 2,
+        "input_size": 512,
+        "resize_size": 512,
+        "gt_img_mean": [0.22163097061772077, 0.15960744027926482, 0.15856768450736192, 0.1464473988783382, 0.0806652742992612],
+        "gt_img_std": [0.2122101685816481, 0.22743527384023554, 0.2329237919986701, 0.22080352490903563, 0.18665678121328116]
+    },  
+    "batch_size": 1,
+    "which_block": -1,
+
+    "K": 7,
+    "image_color_lambda": 0,
+
+    "n_clusters": 7,
+
+    "crf_params": {
+        "w1": 10, 
+        "alpha": 80, 
+        "beta": 13, 
+        "w2": 3, 
+        "gamma": 3, 
+        "it": 5.0
+    },
+
+    "save_intermediate_result": true,
+    "intermediate_result_path": "./output"
+}

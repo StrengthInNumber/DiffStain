@@ -25,7 +25,7 @@
                     "to_size": 512,
                     "clip_percent": 2,
                     "phase": "train",
-                    "binary_cond_path": ,
+                    "if_nsc_binary_cond": false,
                     "gt_img_mean": [0.22163097061772077, 0.15960744027926482, 0.15856768450736192, 0.1464473988783382, 0.0806652742992612],
                     "gt_img_std": [0.2122101685816481, 0.22743527384023554, 0.2329237919986701, 0.22080352490903563, 0.18665678121328116],
                     "cond_img_mean": [0.5400268630588958, 0.49341613894624253, 0.5061081205316877],
@@ -61,7 +61,14 @@
                     "to_size": 512,
                     "clip_percent": 2,
                     "phase": "test",
-                    "binary_cond_path": null,
+                    "if_nsc_binary_cond": true,
+                    "binary_cond_path_list": {
+                        "C01": "/root/autodl-tmp/DiffStain/DeepSC/output/03-24_17-03C01/crfs",
+                        "C02": "/root/autodl-tmp/DiffStain/DeepSC/output/03-24_17-03C01/crfs",
+                        "C03": "/root/autodl-tmp/DiffStain/DeepSC/output/03-24_17-03C01/crfs",
+                        "C04": "/root/autodl-tmp/DiffStain/DeepSC/output/03-24_17-03C01/crfs",
+                        "C05": "/root/autodl-tmp/DiffStain/DeepSC/output/03-24_17-03C01/crfs"
+                    },
                     "gt_img_mean": [0.22163097061772077, 0.15960744027926482, 0.15856768450736192, 0.1464473988783382, 0.0806652742992612],
                     "gt_img_std": [0.2122101685816481, 0.22743527384023554, 0.2329237919986701, 0.22080352490903563, 0.18665678121328116],
                     "cond_img_mean": [0.5400268630588958, 0.49341613894624253, 0.5061081205316877],
@@ -99,7 +106,7 @@
                         "weight_decay": 0
                     }
                 ],
-                "t_start": 10
+                "t_start": 2000
             }
         },
         "which_networks": [
@@ -137,7 +144,7 @@
                         },
                         "test": {
                             "schedule": "linear",
-                            "n_timestep": 2500,
+                            "n_timestep": 2000,
                             "linear_start": 1e-6,
                             "linear_end": 0.01
                         }

@@ -1,0 +1,2 @@
+DATASET=cpg0000-jump-pilot/source_4/images/2020_11_18_CPJUMP1_TimepointDay1/images/BR00117006__2020-11-03T19_45_39-Measurement1/Images
+aws s3 cp --recursive s3://cellpainting-gallery/${DATASET}/ ./download/ --no-sign-request
