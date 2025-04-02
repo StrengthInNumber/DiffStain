@@ -33,12 +33,12 @@ python gen_data_dir.py --download_dir ./download --des_dir ./dataset
 The backbone of this implementation is based on [Janspiry/Palette-Image-to-Image-Diffusion-Models](https://github.com/Janspiry/Palette-Image-to-Image-Diffusion-Models) and is trained in the same way. We provide our .json file "cell_painting.json" which contains the hyperparameters used to train our models. This will require editing to suit the requirements of your file structures and datasets. You can then initiate training with the following commands:
 ```shell
 cd palette
-python run.py -p train -c config/diffstain.json
+python run_palette.py -p train -c config/diffstain.json
 ```
 ### Finetuning Dino
 The dino model needs to be finetuned on the cell painting dataset and the checkpoint pretrained on ImageNet is available [here](https://dl.fbaipublicfiles.com/dino/dino_deitsmall8_pretrain/dino_deitsmall8_pretrain_full_checkpoint.pth) (please put it into `./NSC/dino/pretrained_ckpt` or you can adjust the path in the config file). You can start to finetune the dino model with the following commands:
 ```shell
-cd DeepSC/dino
+cd NSC/dino
 python finetune_dino.py --channel 1 --config_path './vits8Args.json'
 ```
 In order to achieve a better effect of unsupervised deep neural spectral clustering, it is recommended to finetune 5 models on 5 channel images respectively to better learn the features of the 5 channels of fluorescence staining images.

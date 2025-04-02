@@ -1,0 +1,15 @@
+numpy
+scipy
+matplotlib
+pandas
+scikit-learn
+torch
+torchvision
+tqdm
+opencv-python
+Pillow
+seaborn
+accelerate
+fire
+pillow
+scikit-image
